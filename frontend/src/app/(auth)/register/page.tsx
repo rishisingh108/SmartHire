@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
+import { Target, Briefcase, Eye, EyeOff, AlertCircle, Bot, Video, Search, Mail, Check } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -59,10 +60,11 @@ export default function RegisterPage() {
       <div style={{
         flex: 1, display: 'flex', flexDirection: 'column',
         justifyContent: 'center', alignItems: 'center',
-        padding: '40px', background: '#ffffff',
-        overflowY: 'auto',
+        padding: '40px', background: '#fafafa',
+        backgroundImage: 'radial-gradient(circle at 15% 15%, rgba(22,163,74,0.05) 0%, transparent 40%), radial-gradient(circle at 85% 85%, rgba(22,163,74,0.04) 0%, transparent 40%)',
+        overflowY: 'auto', position: 'relative',
       }}>
-        <div style={{ width: '100%', maxWidth: '420px' }}>
+        <div style={{ width: '100%', maxWidth: '420px', position: 'relative', zIndex: 1 }}>
 
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px' }}>
@@ -80,7 +82,7 @@ export default function RegisterPage() {
             Create your account
           </h1>
           <p style={{ color: '#6b7280', fontSize: '15px', margin: '0 0 28px' }}>
-            Join 10,000+ companies hiring smarter
+            Join 6,000+ companies hiring smarter
           </p>
 
           {/* Role Toggle */}
@@ -98,8 +100,10 @@ export default function RegisterPage() {
                   color: formData.role === role ? 'white' : '#6b7280',
                   fontSize: '14px', fontWeight: '600', cursor: 'pointer',
                   transition: 'all 0.2s',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
                 }}>
-                {role === 'CANDIDATE' ? '🎯 Job Seeker' : '🏢 Recruiter'}
+                {role === 'CANDIDATE' ? <Target size={15} /> : <Briefcase size={15} />}
+                {role === 'CANDIDATE' ? 'Job Seeker' : 'Recruiter'}
               </button>
             ))}
           </div>
@@ -118,7 +122,11 @@ export default function RegisterPage() {
                 onFocus={(e) => { e.target.style.border = '1.5px solid #16a34a'; e.target.style.boxShadow = '0 0 0 3px rgba(22,163,74,0.1)'; }}
                 onBlur={(e) => { if (!errors.name) { e.target.style.border = '1.5px solid #d1d5db'; e.target.style.boxShadow = 'none'; }}}
               />
-              {errors.name && <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '5px' }}>⚠ {errors.name}</p>}
+              {errors.name && (
+                <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '5px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <AlertCircle size={12} /> {errors.name}
+                </p>
+              )}
             </div>
 
             {/* Email */}
@@ -135,7 +143,11 @@ export default function RegisterPage() {
                 onFocus={(e) => { e.target.style.border = '1.5px solid #16a34a'; e.target.style.boxShadow = '0 0 0 3px rgba(22,163,74,0.1)'; }}
                 onBlur={(e) => { if (!errors.email) { e.target.style.border = '1.5px solid #d1d5db'; e.target.style.boxShadow = 'none'; }}}
               />
-              {errors.email && <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '5px' }}>⚠ {errors.email}</p>}
+              {errors.email && (
+                <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '5px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <AlertCircle size={12} /> {errors.email}
+                </p>
+              )}
             </div>
 
             {/* Password */}
@@ -154,11 +166,15 @@ export default function RegisterPage() {
                   onBlur={(e) => { if (!errors.password) { e.target.style.border = '1.5px solid #d1d5db'; e.target.style.boxShadow = 'none'; }}}
                 />
                 <button type="button" onClick={() => setShowPassword(!showPassword)}
-                  style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}>
-                  {showPassword ? '🙈' : '👁'}
+                  style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', display: 'flex', alignItems: 'center' }}>
+                  {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
-              {errors.password && <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '5px' }}>⚠ {errors.password}</p>}
+              {errors.password && (
+                <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '5px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <AlertCircle size={12} /> {errors.password}
+                </p>
+              )}
 
               {/* Password strength */}
               {formData.password && (
@@ -186,7 +202,10 @@ export default function RegisterPage() {
                 padding: '12px 14px', borderRadius: '8px', marginBottom: '20px',
                 background: '#fef2f2', border: '1px solid #fecaca',
                 color: '#dc2626', fontSize: '14px',
-              }}>⚠ {apiError}</div>
+                display: 'flex', alignItems: 'center', gap: '8px',
+              }}>
+                <AlertCircle size={15} /> {apiError}
+              </div>
             )}
 
             <button type="submit" disabled={loading}
@@ -238,31 +257,38 @@ export default function RegisterPage() {
             Hire smarter with AI
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '16px', margin: '0 0 40px', lineHeight: '1.6' }}>
-            SmartHire uses GPT-4 to screen resumes, rank candidates, and schedule interviews automatically.
+            SmartHire uses GPT-4o to screen resumes, rank candidates, and schedule interviews automatically.
           </p>
 
           {/* Features */}
           {[
-            { icon: '🤖', title: 'AI Resume Screening', desc: 'Auto-score candidates in seconds' },
-            { icon: '🎥', title: 'Video Interviews', desc: 'Built-in WebRTC video calls' },
-            { icon: '🔍', title: 'Semantic Search', desc: 'Find candidates by meaning, not keywords' },
-            { icon: '📧', title: 'Auto Outreach', desc: 'AI-written personalized emails' },
-          ].map((f) => (
-            <div key={f.title} style={{
-              display: 'flex', alignItems: 'center', gap: '14px',
-              background: 'rgba(255,255,255,0.07)', borderRadius: '12px',
-              padding: '14px 16px', marginBottom: '12px',
-              border: '1px solid rgba(255,255,255,0.1)',
-              textAlign: 'left',
-            }}>
-              <span style={{ fontSize: '22px' }}>{f.icon}</span>
-              <div>
-                <div style={{ color: 'white', fontWeight: '600', fontSize: '14px' }}>{f.title}</div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{f.desc}</div>
+            { icon: Bot, title: 'AI Resume Screening', desc: 'Auto-score candidates in seconds' },
+            { icon: Video, title: 'Video Interviews', desc: 'Built-in WebRTC video calls' },
+            { icon: Search, title: 'Semantic Search', desc: 'Find candidates by meaning, not keywords' },
+            { icon: Mail, title: 'Auto Outreach', desc: 'AI-written personalized emails' },
+          ].map((f) => {
+            const FeatureIcon = f.icon;
+            return (
+              <div key={f.title} style={{
+                display: 'flex', alignItems: 'center', gap: '14px',
+                background: 'rgba(255,255,255,0.07)', borderRadius: '12px',
+                padding: '14px 16px', marginBottom: '12px',
+                border: '1px solid rgba(255,255,255,0.1)',
+                textAlign: 'left',
+              }}>
+                <div style={{ width: '38px', height: '38px', borderRadius: '9px', background: 'rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <FeatureIcon size={18} color="#4ade80" strokeWidth={2} />
+                </div>
+                <div>
+                  <div style={{ color: 'white', fontWeight: '600', fontSize: '14px' }}>{f.title}</div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{f.desc}</div>
+                </div>
+                <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+                  <Check size={16} color="#4ade80" strokeWidth={2.5} />
+                </div>
               </div>
-              <div style={{ marginLeft: 'auto', color: '#4ade80', fontSize: '16px' }}>✓</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
