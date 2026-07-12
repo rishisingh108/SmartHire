@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  RECRUITER
+  CANDIDATE
+  ADMIN
+}
+
+enum AppStatus {
+  APPLIED
+  SCREENING
+  INTERVIEW
+  OFFERED
+  REJECTED
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+  name     String
+  role     Role   @default(CANDIDATE)
+
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
+
+  applications Application[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Company {
+  id      String  @id @default(uuid())
+  name    String
+  website String?
+
+  users User[]
+  jobs  Job[]
+
+  createdAt DateTime @default(now())
+}
+
+model Job {
+  id           String @id @default(uuid())
+  title        String
+  description  String
+  requirements String
+
+  location String?
+  salary   String?
+  isActive Boolean @default(true)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  applications Application[]
+
+  createdAt DateTime @default(now())
+}
+
+model Application {
+  id String @id @default(uuid())
+
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id])
+
+  candidateId String
+  candidate   User   @relation(fields: [candidateId], references: [id])
+
+  resumeUrl  String
+  resumeText String?
+
+  aiScore   Int?
+  aiSummary String?
+
+  aiSkills String[]
+  aiGaps   String[]
+
+  status AppStatus @default(APPLIED)
+
+  interview Interview?
+
+  createdAt DateTime @default(now())
+}
+
+model Interview {
+  id String @id @default(uuid())
+
+  applicationId String      @unique
+  application   Application @relation(fields: [applicationId], references: [id])
+
+  roomUrl      String?
+  recordingUrl String?
+  transcript   String?
+
+  aiScore   Int?
+  aiSummary String?
+
+  highlights Json?
+
+  scheduledAt DateTime?
+
+  createdAt DateTime @default(now())
+}
