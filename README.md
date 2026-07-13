@@ -15,7 +15,23 @@ Smart resume screening, real-time interviews, and end-to-end hiring — all in o
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)
 ![OpenAI](https://img.shields.io/badge/OpenAI-API-412991?style=for-the-badge&logo=openai)
 
+**[🌐 Live Demo](https://smart-hire-olive.vercel.app)** · **[⚙️ Backend API](https://smarthire-production-31a0.up.railway.app)**
+
 </div>
+
+---
+
+## 📸 App Preview
+
+| Landing Page | Login |
+|---|---|
+| ![Landing Page](./screenshots/landing.png) | ![Login Page](./screenshots/login.png) |
+
+| Recruiter Dashboard | Real-Time Interview & Chat |
+|---|---|
+| ![Recruiter Dashboard](./screenshots/recruiter-dashboard.png) | ![Interview & Chat](./screenshots/interview-chat.png) |
+
+> Add your screenshots to a `screenshots/` folder in the repo root and update the paths above.
 
 ---
 
@@ -24,6 +40,10 @@ Smart resume screening, real-time interviews, and end-to-end hiring — all in o
 **SmartHire** is a full stack AI-powered recruitment platform designed to simplify hiring for recruiters and job seekers alike. It combines automated resume screening, semantic candidate matching, real-time interview scheduling, and application tracking into a single, modern platform.
 
 The project is built as a **monorepo-style setup** with a decoupled **Next.js frontend** and a **NestJS backend**, backed by PostgreSQL, Redis-powered background jobs, and AI-driven resume intelligence using OpenAI and Pinecone vector search.
+
+**🔗 Live:**
+- Frontend: [smart-hire-olive.vercel.app](https://smart-hire-olive.vercel.app) (deployed on Vercel)
+- Backend API: [smarthire-production-31a0.up.railway.app](https://smarthire-production-31a0.up.railway.app) (deployed on Railway)
 
 ---
 
@@ -40,6 +60,19 @@ The project is built as a **monorepo-style setup** with a decoupled **Next.js fr
 - 📧 **Email Notifications** — Automated email notifications via Nodemailer
 - 🏢 **Company Profiles** — Dedicated company/recruiter profile management
 - 🐳 **Dockerized Infrastructure** — PostgreSQL & Redis services managed via Docker Compose
+
+---
+
+## 🏗️ System Architecture & AI Flow
+
+How AI resume screening & semantic search works under the hood:
+
+1. **Resume Upload** — Candidate uploads a PDF resume → stored securely in an **AWS S3 Bucket**.
+2. **Text Extraction** — Backend extracts raw text from the uploaded PDF using `pdf-parse`.
+3. **Queue Processing** — The extracted text is pushed to a **BullMQ** queue backed by **Redis**, ensuring non-blocking, asynchronous processing.
+4. **Vector Embedding** — A background worker sends the text to OpenAI's embedding model (`text-embedding-3-small`) to generate a high-dimensional vector.
+5. **Vector Storage** — The embeddings, along with metadata, are upserted into the **Pinecone** vector database.
+6. **Semantic Matching** — When a recruiter creates a job description, its embedding is generated and compared against stored candidate vectors to instantly surface the best-matching candidates.
 
 ---
 
@@ -74,8 +107,12 @@ The project is built as a **monorepo-style setup** with a decoupled **Next.js fr
 | **pdf-parse** | Resume (PDF) text extraction |
 | **Nodemailer** | Email notifications |
 
-### DevOps
-- **Docker & Docker Compose** — Local PostgreSQL and Redis services
+### Deployment
+| Service | Purpose |
+|---|---|
+| **Vercel** | Frontend hosting |
+| **Railway** | Backend hosting + managed PostgreSQL & Redis |
+| **Docker & Docker Compose** | Local development services |
 
 ---
 
@@ -83,7 +120,7 @@ The project is built as a **monorepo-style setup** with a decoupled **Next.js fr
 
 ```
 SmartHire/
-├── backend/                 # NestJS API server
+├── backend/                  # NestJS API server
 │   ├── prisma/               # Database schema & migrations
 │   ├── src/
 │   │   ├── ai/                # AI resume screening & processing
@@ -113,11 +150,11 @@ SmartHire/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) (v18+)
-- [Docker & Docker Compose](https://www.docker.com/)
-- An [OpenAI API key](https://platform.openai.com/)
-- A [Pinecone](https://www.pinecone.io/) account & index
-- An AWS S3 bucket (for resume storage)
+- **Node.js** (v18+ recommended)
+- **Docker & Docker Compose**
+- An **OpenAI API key**
+- A **Pinecone** account & index configured with **1536 dimensions** (for `text-embedding-3-small`)
+- An **AWS S3 bucket** configured for file storage
 
 ### 1. Clone the repository
 ```bash
@@ -136,18 +173,26 @@ cd backend
 npm install
 ```
 
-Create a `.env` file in `backend/` (see [Environment Variables](#-environment-variables) below), then run:
+Create a `.env` file in `backend/` (see [Environment Variables](#-environment-variables)), then run migrations and start the server:
 
 ```bash
+# Apply database migrations
 npx prisma migrate dev
+
+# Seed the database with initial data (if configured)
+npx prisma db seed
+
+# Start server in development mode
 npm run start:dev
 ```
 
 Backend runs on **http://localhost:3001**
 
+> 📖 **API Docs:** Once the server is running, view the interactive Swagger API suite at `http://localhost:3001/api/docs`.
+
 ### 4. Set up the Frontend
 ```bash
-cd frontend
+cd ../frontend
 npm install
 ```
 
@@ -199,7 +244,7 @@ NEXT_PUBLIC_API_URL="http://localhost:3001"
 
 The `docker-compose.yml` spins up:
 - **PostgreSQL 15** — `localhost:5432`
-- **Redis 7** — `localhost:6379`
+- **Redis 7** — `localhost:6379` (required for BullMQ queues)
 
 ```bash
 docker-compose up -d      # start services
@@ -208,12 +253,20 @@ docker-compose down       # stop services
 
 ---
 
+## 🛠️ Troubleshooting
+
+- **Prisma connection errors** — If migrations or queries fail, confirm the Docker containers are healthy with `docker ps` before running Prisma commands.
+- **Pinecone vector dimension mismatch** — `text-embedding-3-small` generates **1536-dimension** vectors. Make sure your Pinecone index is created with the same dimension, otherwise upserts will fail.
+- **CORS errors** — If frontend requests fail, confirm `NEXT_PUBLIC_API_URL` in the frontend matches the actual backend URL/port, and that the backend's `enableCors()` origin list includes your frontend's URL.
+
+---
+
 ## 🗺️ Roadmap
 
 - [ ] CI/CD pipeline setup
-- [ ] Production Docker images for frontend & backend
 - [ ] Automated testing coverage
 - [ ] Notification system enhancements
+- [ ] Production Docker images for frontend & backend
 
 ---
 
