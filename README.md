@@ -41,7 +41,7 @@ The project is built as a **monorepo-style setup** with a decoupled **Next.js fr
 
 **🔗 Live:**
 - Frontend: [smart-hire-olive.vercel.app](https://smart-hire-olive.vercel.app) (deployed on Vercel)
-- Backend API: [smarthire-production-31a0.up.railway.app](https://smarthire-production-31a0.up.railway.app) (deployed on Railway)
+- Backend API: [smarthire-production-31a0.up.railway.app](smarthire-production-1443.up.railway.app) (deployed on Railway)
 
 ---
 
