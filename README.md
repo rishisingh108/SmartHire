@@ -31,8 +31,6 @@ Smart resume screening, real-time interviews, and end-to-end hiring — all in o
 |---|---|
 | ![Recruiter Dashboard](./screenshots/recruiter-dashboard.png) | ![Interview & Chat](./screenshots/interview-chat.png) |
 
-> Add your screenshots to a `screenshots/` folder in the repo root and update the paths above.
-
 ---
 
 ## 📖 About
