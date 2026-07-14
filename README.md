@@ -15,7 +15,7 @@ Smart resume screening, real-time interviews, and end-to-end hiring — all in o
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)
 ![OpenAI](https://img.shields.io/badge/OpenAI-API-412991?style=for-the-badge&logo=openai)
 
-**[🌐 Live Demo](https://smart-hire-olive.vercel.app)** · **[⚙️ Backend API](https://smarthire-production-31a0.up.railway.app)**
+**[🌐 Live Demo](https://smart-hire-olive.vercel.app)** · **[⚙️ Backend API](smarthire-production-1443.up.railway.app)**
 
 </div>
 
