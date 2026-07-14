@@ -40,7 +40,7 @@ Smart resume screening, real-time interviews, and end-to-end hiring — all in o
 The project is built as a **monorepo-style setup** with a decoupled **Next.js frontend** and a **NestJS backend**, backed by PostgreSQL, Redis-powered background jobs, and AI-driven resume intelligence using OpenAI and Pinecone vector search.
 
 **🔗 Live:**
-- Frontend: [smart-hire-olive.vercel.app](https://smart-hire-olive.vercel.app) (deployed on Vercel)
+- Frontend: [https://smart-hire-mu-ruby.vercel.app/](https://smart-hire-mu-ruby.vercel.app/) (deployed on Vercel)
 - Backend API: [smarthire-production-1443.up.railway.app](smarthire-production-1443.up.railway.app) (deployed on Railway)
 
 ---
