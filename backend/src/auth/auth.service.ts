@@ -26,12 +26,24 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
+    // Agar recruiter hai, to pehle uske liye ek company bana do
+    let companyId: string | undefined = undefined;
+    if (dto.role === 'RECRUITER') {
+      const company = await this.prisma.company.create({
+        data: {
+          name: `${dto.name}'s Company`,
+        },
+      });
+      companyId = company.id;
+    }
+
     const user = await this.prisma.user.create({
       data: {
         email: dto.email,
         password: hashedPassword,
         name: dto.name,
         role: dto.role || 'CANDIDATE',
+        ...(companyId && { companyId }),
       },
     });
 
